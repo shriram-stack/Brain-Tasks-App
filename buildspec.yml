@@ -1,0 +1,27 @@
+version: 0.2
+
+env:
+  variables:
+    ECR_REPO_URI: 13482229768.dkr.ecr.us-east-1.amazonaws.com/brain-tasks-app
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REPO_URI
+      - IMAGE_TAG=$(echo $CODEBUILD_BUILD_ID | cut -d':' -f2)  # Unique tag
+  build:
+    commands:
+      - echo Building the Docker image...
+      - docker build -t $ECR_REPO_URI:$IMAGE_TAG .
+      - docker tag $ECR_REPO_URI:$IMAGE_TAG $ECR_REPO_URI:latest
+      - echo Pushing the Docker image...
+      - docker push $ECR_REPO_URI:$IMAGE_TAG
+      - docker push $ECR_REPO_URI:latest
+  post_build:
+    commands:
+      - echo Build completed
+artifacts:
+  files:
+    - k8s/deployment.yaml
+    - k8s/service.yaml
