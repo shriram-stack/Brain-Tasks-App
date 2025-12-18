@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: brain-tasks-app
-        image: 13482229768.dkr.ecr.us-east-1.amazonaws.com/brain-tasks-app:latest  # Updated dynamically in pipeline
+        image: 134832229768.dkr.ecr.us-east-1.amazonaws.com/brain-tasks-app:latest  
         ports:
         - containerPort: 3000
