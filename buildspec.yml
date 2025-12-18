@@ -11,7 +11,7 @@ phases:
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - echo "Logging in to Docker Hub with hardcoded credentials (temporary)..."
-      - echo "dckr_pat_UjESG0RStw35G9Rawi1dpyQMTnQ" | docker login -u shriram123 --password-stdin
+      - echo "dckr_pat_xv-QEo0WSihpNKMh5r8hCXL7EtM" | docker login -u shriram123 --password-stdin
       - "IMAGE_TAG=$(echo $CODEBUILD_BUILD_ID | awk -F: '{print $2}')"
 
   build:
