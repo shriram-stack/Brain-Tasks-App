@@ -1,15 +1,16 @@
+
 version: 0.2
 
 env:
   variables:
-    REPOSITORY_URI: "134832229768.dkr.ecr.us-east-1.amazonaws.com/brain-tasks-app"  # Fixed your account ID typo (was 13482229768)
+    REPOSITORY_URI: "134832229768.dkr.ecr.us-east-1.amazonaws.com/brain-tasks-app"
 
 phases:
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
-      - IMAGE_TAG=$(echo $CODEBUILD_BUILD_ID | awk -F: '{print $2}')  # Unique tag for immutability
+      - IMAGE_TAG=$(echo $CODEBUILD_BUILD_ID | awk -F: '{print $2}')
 
   build:
     commands:
@@ -22,11 +23,12 @@ phases:
       - echo "Pushing the Docker image..."
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - docker push $REPOSITORY_URI:latest
-      - echo "Updating deployment.yaml with new image tag..."
-      - sed -i "s|image: .*|image: $REPOSITORY_URI:$IMAGE_TAG|g" k8s/deployment.yaml  # Assumes your deployment.yaml has a line like "image: something"
+      - echo "Updating deployment manifest with new image tag..."
+      - sed -i "s|image: .*|image: $REPOSITORY_URI:$IMAGE_TAG|g" k8s/deployment.yaml
       - echo "Build completed successfully"
 
 artifacts:
   files:
     - k8s/deployment.yaml
     - k8s/service.yaml
+EOF
